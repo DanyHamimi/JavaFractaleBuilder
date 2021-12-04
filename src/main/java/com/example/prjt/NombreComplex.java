@@ -18,16 +18,42 @@ public class NombreComplex {
         this.imaginary = imaginary;
     }
 
-    public void add(NombreComplex complex_number)
-    {
-        this.real = this.real + complex_number.real;
-        this.imaginary = this.imaginary + complex_number.imaginary;
-    }
+
+
+
 
 
     public double mod()
     {
         return Math.sqrt(Math.pow(this.real,2) + Math.pow(this.imaginary,2));
+    }
+
+    public double abs(){
+        return Math.hypot(this.real, this.imaginary);
+    }
+
+    public NombreComplex times(NombreComplex number){
+
+        double a = this.real*number.real;
+        double b = this.imaginary*number.real;
+        double c = this.real*number.imaginary;
+        double d = this.imaginary*number.imaginary*-1;
+
+        double newReal = a+d;
+        double newImaginary = b+c;
+
+
+        NombreComplex newNombreComplex = new NombreComplex(newReal, newImaginary);
+        return newNombreComplex;
+    }
+
+    public NombreComplex add(NombreComplex number){
+
+        double newReal = this.real+number.real;
+        double newImaginary = this.imaginary+number.imaginary;
+
+        return new NombreComplex(newReal, newImaginary);
+
     }
 
     public void multiply(NombreComplex complex_number)
