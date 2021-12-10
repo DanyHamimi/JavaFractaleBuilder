@@ -18,14 +18,18 @@ public class JuliaFractal extends JPanel {
     public static final int MAX_RGB_VALUE = 255;
     public static double zoomv;
     public static int imgnbr;
-    public double imageSize = 400;
+    public double imageSize = 800;
+    public double real;
+    public double imag;
 
     public JuliaFractal(double zoomv) {
-        setPreferredSize(new Dimension(400, 400));
+        setPreferredSize(new Dimension(800, 800));
         setBackground(Color.white);
         this.zoomv = zoomv;
         imgnbr++;
         System.out.println(imgnbr);
+        this.real = 0.285;
+        this.imag = 0.01;
     }
 
     public static Color invert(Color c) {
@@ -44,19 +48,17 @@ public class JuliaFractal extends JPanel {
         }
     }
 
-    public void drawJuliaSet(Graphics2D g, double zoom, double posx, double posy) throws IOException {
+    public void drawJuliaSet(Graphics2D g, double zoom, double posx, double posy,double real,double imag) throws IOException {
         BufferedImage img = new BufferedImage((int)imageSize, (int)imageSize,BufferedImage.TYPE_3BYTE_BGR);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        out.print("R: ");
         double cReal = 0.285;
-        out.print("I): ");
         double cImag = 0.013;
 
         NombreComplex constant = new NombreComplex(cReal,cImag);
 
 
-        int max_iter = 2000;
+        int max_iter = 3000;
 
         for(int x=0; x<imageSize; x++)
         {
@@ -85,65 +87,16 @@ public class JuliaFractal extends JPanel {
                 }else{
                     img.setRGB(x,y,Color.BLACK.getRGB());
                 }
-                //System.out.println(i);
             }
         }
 
         ImageIO.write(img,"PNG", new File(imgnbr+".png"));
         System.out.println(imgnbr+" a été fait");
         ImageIO.write(img,"PNG", new File("julia.png"));
-        g.drawImage(img, 0, 0, null);
-    }
-    public void drawJuliaSetBis(double zoom, double posx, double posy) throws IOException {
-        BufferedImage img = new BufferedImage((int)imageSize, (int)imageSize,BufferedImage.TYPE_3BYTE_BGR);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-        out.print("R: ");
-        double cReal = 0.285;
-        out.print("I): ");
-        double cImag = 0.013;
-
-        NombreComplex constant = new NombreComplex(cReal,cImag);
-
-
-        int max_iter = 2000;
-
-        for(int x=0; x<imageSize; x++)
-        {
-            for(int y=0; y<imageSize; y++)
-            {
-
-                NombreComplex z0 = new NombreComplex();
-
-                NombreComplex zn = new NombreComplex(zoom*(x-imageSize/2)/(imageSize/2), zoom*(y-imageSize/2)/(imageSize/2) );
-
-                int i =0;
-                while(i<max_iter && zn.mod() <= 2)
-                {
-                    z0 = zn;
-                    zn = zn.times(zn).add(constant);
-                    i++;
-                }
-
-
-                float Hued = Math.abs((((i%2000)/1999.0f)*6));
-
-
-                Color color = Color.getHSBColor(Hued, 0.75f, 1.0f);
-                if(i>10){
-                    img.setRGB(x,y,invert(color).getRGB());
-                }else{
-                    img.setRGB(x,y,Color.BLACK.getRGB());
-                }
-                //System.out.println(i);
-            }
+        if(g != null){
+            g.drawImage(img, 0, 0, null);
         }
-
-        ImageIO.write(img,"PNG", new File(imgnbr+".png"));
-        System.out.println(imgnbr+" a été fait");
-        ImageIO.write(img,"PNG", new File("julia.png"));
     }
-
     @Override
     public void paintComponent(Graphics gg) {
         ggglo = (Graphics2D) gg;
@@ -152,49 +105,12 @@ public class JuliaFractal extends JPanel {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         try {
-            drawJuliaSet(g,zoomv,0,0);
+            drawJuliaSet(g,zoomv,0,0,0,0);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public static void main(String args[])throws IOException
-    {
-        SwingUtilities.invokeLater(() -> {
-            JFrame f = new JFrame();
-            JButton buttonzoom = new JButton("c");
-            buttonzoom.setBounds(0, 0, 150, 10);
-            f.add(buttonzoom);
-            buttonzoom.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    while(zoomv>0.000001){
-                        JuliaFractal fractaldraw = new JuliaFractal(zoomv/1.1);
-                        System.out.println(zoomv);
-                        try {
-                            fractaldraw.drawJuliaSetBis(zoomv,0,0);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                        try {
-                            Thread.sleep(10);
-
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-
-
-                }
-            });
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.setTitle("Julia Set");
-            f.setResizable(false);
-            JuliaFractal fractaldraw = new JuliaFractal(1.3);
-            f.add(fractaldraw, BorderLayout.CENTER,1);
-            f.pack();
-            f.setLocationRelativeTo(null);
-            f.setVisible(true);
-
-        });
+    public static double getActualZoom(){
+        return zoomv;
     }
 }
