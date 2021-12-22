@@ -28,13 +28,7 @@ public class JuliaFractal extends JPanel implements Runnable{
     public double imag;
     BufferedImage img;
     private static final int crunchifyThreads = 30;
-
     ExecutorService executor = Executors.newFixedThreadPool(4);
-
-
-    ExecutorService service = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors() + 1);
-
     public JuliaFractal(double zoomv) {
         setPreferredSize(new Dimension(800, 800));
         setBackground(Color.white);

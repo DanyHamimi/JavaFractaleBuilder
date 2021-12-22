@@ -19,12 +19,7 @@ public class Window extends JFrame {
             fractaldraw2 = new JuliaFractal(fractaldraw.getActualZoom()*valzoo);
         }
         System.out.println(fractaldraw.getActualZoom());
-        try {
-            fractaldraw2.drawJuliaSet(null,fractaldraw.getActualZoom(),0,0,real,imag,windowtotal);
-            windowtotal.repaint();
-        } catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        windowtotal.repaint();
     }
     public static void remake(double creal1, double cimag1, JFrame windowtotal){
         System.out.println(creal1);
