@@ -73,45 +73,49 @@ public class JuliaFractal extends JPanel implements Runnable{
 
 
         int max_iter = 255;
+        ThreadDraw D1 = new ThreadDraw(zoom,0,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);
+        ThreadDraw D2 = new ThreadDraw(zoom,1,constant,(int)imageSize,(int)imageSize/4-1,(int)imageSize/2,img,this,windowtotal);
+        ThreadDraw D3 = new ThreadDraw(zoom,1,constant,(int)imageSize,(int)imageSize/2-1,3*(int)imageSize/4,img,this,windowtotal);
+        ThreadDraw D4 = new ThreadDraw(zoom,1,constant,(int)imageSize,(3*(int)imageSize/4)-1,(int)imageSize,img,this,windowtotal);
+        executor.execute(D1);
+        executor.execute(D2);
+        executor.execute(D3);
+        executor.execute(D4);
+
+        /**ThreadDraw D2 = new ThreadDraw(zoom,1,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);
+        ThreadDraw D3 = new ThreadDraw(zoom,2,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);
+        ThreadDraw D4 = new ThreadDraw(zoom,3,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);**/
+
 
         for(int x=0; x<imageSize; x++)
         {
 
             int x1= x;
 
-            ThreadDraw D1 = new ThreadDraw(zoom,x1,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);
+            /**ThreadDraw D1 = new ThreadDraw(zoom,x1,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);
             //D1.run();
             ThreadDraw D2 = new ThreadDraw(zoom,x1,constant,(int)imageSize,(int)imageSize/4-1,(int)imageSize/2,img,this,windowtotal);
             //D2.run();
             ThreadDraw D3 = new ThreadDraw(zoom,x1,constant,(int)imageSize,(int)imageSize/2-1,3*(int)imageSize/4,img,this,windowtotal);
             //D3.run();
-            ThreadDraw D4 = new ThreadDraw(zoom,x1,constant,(int)imageSize,(3*(int)imageSize/4)-1,(int)imageSize,img,this,windowtotal);
+            ThreadDraw D4 = new ThreadDraw(zoom,x1,constant,(int)imageSize,(3*(int)imageSize/4)-1,(int)imageSize,img,this,windowtotal);**/
             //D4.run();
-            executor.execute(D1);
-            executor.execute(D2);
-            executor.execute(D3);
-            executor.execute(D4);
-            if(windowtotal!=null){
-                windowtotal.repaint();
-            }
-           // executor.shutdown();
-
-
-
-            //drawz(zoom,x1,constant,(int)imageSize,0,(int)imageSize/2);
-            //service.shutdown();
-            //drawz(zoom,x1,constant,(int)imageSize,(int)imageSize/2-1,(int)imageSize);
-
+            /**D1.run();
+            D2.run();
+            D3.run();
+            D4.run();**/
         }
 
         ImageIO.write(img,"PNG", new File(imgnbr+".png"));
         System.out.println(imgnbr+" a été fait");
         ImageIO.write(img,"PNG", new File("julia.png"));
+        Thread.sleep(300);
         if(g != null){
             g.drawImage(img, 0, 0, null);
         }
         long endTime = System.nanoTime();
         long duration = ((endTime - startTime)/1000000);
+
         if(windowtotal !=null){
             repaintng(windowtotal);
         }
@@ -148,7 +152,7 @@ public class JuliaFractal extends JPanel implements Runnable{
             NombreComplex zn = new NombreComplex(zoom*(x-imageSize/2)/(imageSize/2), zoom*(y-imageSize/2)/(imageSize/2) );
 
             int i =0;
-            while(i<3000 && zn.mod() <= 2)
+            while(i<1000 && zn.mod() <= 2)
             {
                 z0 = zn;
                 zn = zn.times(zn).add(nbcpl);

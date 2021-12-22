@@ -44,10 +44,12 @@ public class ThreadDraw extends Thread{
     }
     @Override
     public void run() {
-            fractalB.drawz(zoom,x1,constant,imageSize,i,i1);
-            if(windowtotal!=null){
+        for(int k = 0;k<800;k++){
+            fractalB.drawz(zoom,k,constant,imageSize,i,i1);
+        }
+            /**if(windowtotal!=null){
                 windowtotal.repaint();
-            }
+            }**/
 
     }
 }
