@@ -12,7 +12,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import static java.lang.System.out;
-public class JuliaFractal extends JPanel {
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+
+public class JuliaFractal extends JPanel implements Runnable{
 
     private static Graphics2D ggglo;
     public static final int MAX_RGB_VALUE = 255;
@@ -21,6 +26,14 @@ public class JuliaFractal extends JPanel {
     public double imageSize = 800;
     public double real;
     public double imag;
+    BufferedImage img;
+    private static final int crunchifyThreads = 30;
+
+    ExecutorService executor = Executors.newFixedThreadPool(crunchifyThreads);
+
+
+    ExecutorService service = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors() + 1);
 
     public JuliaFractal(double zoomv) {
         setPreferredSize(new Dimension(800, 800));
@@ -48,8 +61,9 @@ public class JuliaFractal extends JPanel {
         }
     }
 
-    public void drawJuliaSet(Graphics2D g, double zoom, double posx, double posy,double real,double imag) throws IOException {
-        BufferedImage img = new BufferedImage((int)imageSize, (int)imageSize,BufferedImage.TYPE_3BYTE_BGR);
+    synchronized public void drawJuliaSet(Graphics2D g, double zoom, double posx, double posy,double real,double imag, JFrame windowtotal) throws IOException, InterruptedException {
+        long startTime = System.nanoTime();
+        img = new BufferedImage((int)imageSize, (int)imageSize,BufferedImage.TYPE_INT_RGB);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         double cReal = 0.285;
@@ -58,36 +72,36 @@ public class JuliaFractal extends JPanel {
         NombreComplex constant = new NombreComplex(cReal,cImag);
 
 
-        int max_iter = 3000;
+        int max_iter = 255;
 
         for(int x=0; x<imageSize; x++)
         {
-            for(int y=0; y<imageSize; y++)
-            {
 
-                NombreComplex z0 = new NombreComplex();
+            int x1= x;
 
-                NombreComplex zn = new NombreComplex(zoom*(x-imageSize/2)/(imageSize/2), zoom*(y-imageSize/2)/(imageSize/2) );
-
-                int i =0;
-                while(i<max_iter && zn.mod() <= 2)
-                {
-                    z0 = zn;
-                    zn = zn.times(zn).add(constant);
-                    i++;
-                }
-
-
-                float Hued = Math.abs((((i%2000)/1999.0f)*6));
-
-
-                Color color = Color.getHSBColor(Hued, 0.75f, 1.0f);
-                if(i>10){
-                    img.setRGB(x,y,invert(color).getRGB());
-                }else{
-                    img.setRGB(x,y,Color.BLACK.getRGB());
-                }
+            ThreadDraw D1 = new ThreadDraw(zoom,x1,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);
+            //D1.run();
+            ThreadDraw D2 = new ThreadDraw(zoom,x1,constant,(int)imageSize,(int)imageSize/4-1,(int)imageSize/2,img,this,windowtotal);
+            //D2.run();
+            ThreadDraw D3 = new ThreadDraw(zoom,x1,constant,(int)imageSize,(int)imageSize/2-1,3*(int)imageSize/4,img,this,windowtotal);
+            //D3.run();
+            ThreadDraw D4 = new ThreadDraw(zoom,x1,constant,(int)imageSize,(3*(int)imageSize/4)-1,(int)imageSize,img,this,windowtotal);
+            //D4.run();
+            executor.execute(D1);
+            executor.execute(D2);
+            executor.execute(D3);
+            executor.execute(D4);
+            if(windowtotal!=null){
+                windowtotal.repaint();
             }
+           // executor.shutdown();
+
+
+
+            //drawz(zoom,x1,constant,(int)imageSize,0,(int)imageSize/2);
+            //service.shutdown();
+            //drawz(zoom,x1,constant,(int)imageSize,(int)imageSize/2-1,(int)imageSize);
+
         }
 
         ImageIO.write(img,"PNG", new File(imgnbr+".png"));
@@ -96,7 +110,18 @@ public class JuliaFractal extends JPanel {
         if(g != null){
             g.drawImage(img, 0, 0, null);
         }
+        long endTime = System.nanoTime();
+        long duration = ((endTime - startTime)/1000000);
+        if(windowtotal !=null){
+            repaintng(windowtotal);
+        }
+        System.out.println(duration+"ms pour générer l'image");
     }
+
+    private void repaintng(JFrame windowtotal) {
+        windowtotal.repaint();
+    }
+
     @Override
     public void paintComponent(Graphics gg) {
         ggglo = (Graphics2D) gg;
@@ -105,12 +130,46 @@ public class JuliaFractal extends JPanel {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         try {
-            drawJuliaSet(g,zoomv,0,0,0,0);
-        } catch (IOException e) {
+            drawJuliaSet(g,zoomv,0,0,0,0,null);
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
     public static double getActualZoom(){
         return zoomv;
+    }
+
+
+    public void drawz(double zoom, int x, NombreComplex nbcpl,int imageSize,int yinit,int sizemax){
+        for(int y=yinit; y<sizemax; y++)
+        {
+            NombreComplex z0 = new NombreComplex();
+
+            NombreComplex zn = new NombreComplex(zoom*(x-imageSize/2)/(imageSize/2), zoom*(y-imageSize/2)/(imageSize/2) );
+
+            int i =0;
+            while(i<3000 && zn.mod() <= 2)
+            {
+                z0 = zn;
+                zn = zn.times(zn).add(nbcpl);
+                i++;
+            }
+
+
+            float Hued = Math.abs((((i%2000)/1999.0f)*6));
+
+
+            Color color = Color.getHSBColor(Hued, 0.75f, 1.0f);
+            if(i>10){
+                img.setRGB(x,y,invert(color).getRGB());
+            }else{
+                img.setRGB(x,y,Color.BLACK.getRGB());
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+
     }
 }

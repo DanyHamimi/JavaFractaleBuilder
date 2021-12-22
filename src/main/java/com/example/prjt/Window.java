@@ -20,9 +20,9 @@ public class Window extends JFrame {
         }
         System.out.println(fractaldraw.getActualZoom());
         try {
-            fractaldraw2.drawJuliaSet(null,fractaldraw.getActualZoom(),0,0,real,imag);
+            fractaldraw2.drawJuliaSet(null,fractaldraw.getActualZoom(),0,0,real,imag,windowtotal);
             windowtotal.repaint();
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
         }
     }
@@ -30,9 +30,9 @@ public class Window extends JFrame {
         System.out.println(creal1);
         JuliaFractal fractaldraw2 = new JuliaFractal(1.3);
         try {
-            fractaldraw2.drawJuliaSet(null,1.3,0,0,creal1,cimag1);
+            fractaldraw2.drawJuliaSet(null,1.3,0,0,creal1,cimag1,windowtotal);
             windowtotal.repaint();
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
         }
     }
