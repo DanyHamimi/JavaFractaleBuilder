@@ -27,6 +27,8 @@ public class JuliaFractal extends JPanel implements Runnable{
     public double real;
     public double imag;
     BufferedImage img;
+    double cReal = -0.8;
+    double cImag = 0.156;
     private static final int crunchifyThreads = 30;
     ExecutorService executor = Executors.newFixedThreadPool(4);
     public JuliaFractal(double zoomv) {
@@ -39,6 +41,11 @@ public class JuliaFractal extends JPanel implements Runnable{
         this.imag = 0.01;
     }
 
+
+    public  void setReAndIm(float r, float i){
+        this.cReal = r;
+        this.cImag = i;
+    }
     public static Color invert(Color c) {
         //  TODO : improve
         int a = c.getAlpha();
@@ -60,8 +67,7 @@ public class JuliaFractal extends JPanel implements Runnable{
         img = new BufferedImage((int)imageSize, (int)imageSize,BufferedImage.TYPE_INT_RGB);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        double cReal = 0.285;
-        double cImag = 0.013;
+
 
         NombreComplex constant = new NombreComplex(cReal,cImag);
 

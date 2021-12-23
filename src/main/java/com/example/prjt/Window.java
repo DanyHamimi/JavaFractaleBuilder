@@ -10,6 +10,7 @@ public class Window extends JFrame {
     public static double real;
     static JSlider slider;
     public static double imag;
+    public static JuliaFractal fractaldraw = new JuliaFractal(1.3);
     public static void redraw(JuliaFractal fractaldraw, JFrame windowtotal,boolean val,double valzoo){
         JuliaFractal fractaldraw2;
         if(val){
@@ -21,20 +22,19 @@ public class Window extends JFrame {
         System.out.println(fractaldraw.getActualZoom());
         windowtotal.repaint();
     }
-    public static void remake(double creal1, double cimag1, JFrame windowtotal){
-        System.out.println(creal1);
+    public static JuliaFractal remake(float creal1, float cimag1, JFrame windowtotal){
+        //System.out.println(creal1);
         JuliaFractal fractaldraw2 = new JuliaFractal(1.3);
+        fractaldraw2.setReAndIm(creal1, cimag1);
+
         try {
             fractaldraw2.drawJuliaSet(null,1.3,0,0,creal1,cimag1,windowtotal);
-            windowtotal.repaint();
         } catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
         }
+        return fractaldraw2;
     }
-    /**public void stateChanged(ChangeEvent e)
-    {
-        label.setText("La valeur du Slider est : " + slider.getValue());
-    }**/
+
     public static void main(String[] args) throws IOException {
         {
             SwingUtilities.invokeLater(() -> {
@@ -56,7 +56,6 @@ public class Window extends JFrame {
                 buttondezoom.setBackground(Color.red);
                 buttondezoom.setBounds(0, 742, 400, 20);
                 f.add(buttondezoom);
-                JuliaFractal fractaldraw = new JuliaFractal(1.3);
                 fractaldraw.setBounds(800,0,800,800);
                 f.add(fractaldraw, Component.RIGHT_ALIGNMENT, 1);
                 f.setVisible(true);
@@ -64,10 +63,16 @@ public class Window extends JFrame {
                 windowtotal.add(f);
                 JTextField realV = new JTextField();
                 JTextField imagV = new JTextField();
-                realV.setBounds(250,400,60,30);
-                imagV.setBounds(250,450,60,30);
+                JLabel rT = new JLabel("Réel");
+                JLabel iT = new JLabel("Imaginaire");
+                rT.setBounds(200,400,70,40);
+                iT.setBounds(200,450,70,40);
+                realV.setBounds(270,400,60,30);
+                imagV.setBounds(270,450,60,30);
                 f.add(realV);
                 f.add(imagV);
+                f.add(rT);
+                f.add(iT);
                 JButton generatenew = new JButton("Générer");
                 generatenew.setBounds(200,500,200,20);
                 f.add(generatenew);
@@ -90,7 +95,17 @@ public class Window extends JFrame {
                 generatenew.addActionListener(new ActionListener() {
                     @Override public void actionPerformed(ActionEvent e) {
                         // TODO Régler le pb de si on rentre un string ca fait une erreur
-                        remake(Double.parseDouble(realV.getText()),Double.parseDouble(imagV.getText()),windowtotal);
+                        //remake(Double.parseDouble(realV.getText()),Double.parseDouble(imagV.getText()),windowtotal);
+                        float re = Float.parseFloat(realV.getText());
+                        float im = Float.parseFloat(imagV.getText());
+                        //JuliaFractal j = remake(re,im,windowtotal);
+                        f.remove(fractaldraw);
+                        fractaldraw = remake(re,im,windowtotal);
+                        windowtotal.repaint();
+                        fractaldraw.setBounds(800,0,800,800);
+                        f.add(fractaldraw, Component.RIGHT_ALIGNMENT, 1);
+                        System.out.println(Float.parseFloat(realV.getText()));
+                        System.out.println(Float.parseFloat(imagV.getText()));
                     }
                 });
                 windowtotal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
