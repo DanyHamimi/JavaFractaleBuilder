@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
-public class JuliaFractal extends JPanel implements Runnable{
+public class JuliaFractal extends JPanel{
 
     private static Graphics2D ggglo;
     public static final int MAX_RGB_VALUE = 255;
@@ -26,19 +26,24 @@ public class JuliaFractal extends JPanel implements Runnable{
     public double imageSize = 800;
     public double real;
     public double imag;
-    BufferedImage img;
+    static BufferedImage img;
     double cReal = -0.8;
     double cImag = 0.156;
+    static double deplacementVertical = 0;
+    static double deplacementHorizontal = 0;
+
     private static final int crunchifyThreads = 30;
     ExecutorService executor = Executors.newFixedThreadPool(4);
-    public JuliaFractal(double zoomv) {
+    public JuliaFractal(double zoomv,double deplacement1,double deplacement2) {
         setPreferredSize(new Dimension(800, 800));
         setBackground(Color.white);
         this.zoomv = zoomv;
         imgnbr++;
-        System.out.println(imgnbr);
+        //System.out.println(imgnbr);
         this.real = 0.285;
         this.imag = 0.01;
+        deplacementHorizontal = deplacement1;
+        deplacementVertical = deplacement2;
     }
 
 
@@ -87,7 +92,7 @@ public class JuliaFractal extends JPanel implements Runnable{
 
         executor = Executors.newFixedThreadPool(4);
         ImageIO.write(img,"PNG", new File(imgnbr+".png"));
-        System.out.println(imgnbr+" a été fait");
+        //System.out.println(imgnbr+" a été fait");
         ImageIO.write(img,"PNG", new File("julia.png"));
         if(g != null){
             g.drawImage(img, 0, 0, null);
@@ -98,7 +103,7 @@ public class JuliaFractal extends JPanel implements Runnable{
         if(windowtotal !=null){
             repaintng(windowtotal);
         }
-        System.out.println(duration+"ms pour générer l'image");
+        //System.out.println(duration+"ms pour générer l'image");
     }
 
     private void repaintng(JFrame windowtotal) {
@@ -128,8 +133,7 @@ public class JuliaFractal extends JPanel implements Runnable{
         {
             NombreComplex z0 = new NombreComplex();
 
-            NombreComplex zn = new NombreComplex(zoom*(x-imageSize/2)/(imageSize/2), zoom*(y-imageSize/2)/(imageSize/2) );
-
+            NombreComplex zn = new NombreComplex((zoom*(x-imageSize/2)/(imageSize/2))+this.deplacementHorizontal, (zoom*(y-imageSize/2)/(imageSize/2)+this.deplacementVertical));
             int i =0;
             while(i<1000 && zn.mod() <= 2)
             {
@@ -150,9 +154,12 @@ public class JuliaFractal extends JPanel implements Runnable{
             }
         }
     }
-
-    @Override
-    public void run() {
-
+    public static void exportImg(String k) {
+        try {
+            ImageIO.write(img,"PNG", new File(k+".png"));
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'exportation de l'image");
+        }
     }
+
 }
