@@ -54,8 +54,8 @@ public class Mandel extends JPanel {
 
     public static NombreComplex convertToComplex(int x, int y){
 
-        double real = zoom*(startX + x*dx)+deplY;
-        double imaginary = zoom*(2 - y*dy)+deplX;
+        double real = zoom*(startX + x*dx)+deplX;
+        double imaginary = zoom*(2 - y*dy)+deplY;
         return new NombreComplex(real, imaginary);
 
     }
