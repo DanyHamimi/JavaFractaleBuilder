@@ -24,8 +24,8 @@ public class Mandel extends Fractal {
 
     public Mandel(double zoomA, double movex, double movey) {
         this.setIter(250);
-        deplX = movex;
-        deplY = movey;
+        deplacementHorizontal = movex;
+        deplacementVertical = movey;
         zoom = zoomA;
         setPreferredSize(new Dimension(imageSize, imageSize));
         setBackground(Color.black);
@@ -63,7 +63,8 @@ public class Mandel extends Fractal {
         g.drawImage(img, 0, 0, null);
         long endTime = System.nanoTime();
         long duration = ((endTime - startTime)/1000000);
-        System.out.println(duration+"ms pour générer l'image (Mandel)");
+
+        //System.out.println(duration+"ms pour générer l'image (Mandel)");
 
     }
 

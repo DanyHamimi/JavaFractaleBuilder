@@ -262,7 +262,7 @@ public class Window extends JFrame {
     }
     private static void moveonplan(JFrame windowtotal,double val1,double val2) {
         if(ValActu == 0){
-            mandeldraw.setDeplacement(mandeldraw.deplX+val1*mandeldraw.getActualZoom(),mandeldraw.deplY-val2*mandeldraw.getActualZoom());
+            mandeldraw.setDeplacement(mandeldraw.deplacementHorizontal+val1*mandeldraw.getActualZoom(),mandeldraw.deplacementVertical-val2*mandeldraw.getActualZoom());
         }
         else {
             fractaldraw.setDeplacement(fractaldraw.deplacementHorizontal+val1*fractaldraw.getActualZoom(),fractaldraw.deplacementVertical+val2*fractaldraw.getActualZoom());
