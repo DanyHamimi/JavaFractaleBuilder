@@ -11,23 +11,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class Mandel extends JPanel {
+public class Mandel extends Fractal {
     public static final double startX = -2;
     public static final double width = 4;
     public static final double startY = 2;
     public static final double height = 4;
-    static BufferedImage img;
     public static double deplX = 0;
     public static double deplY = 0;
-    ExecutorService executor = Executors.newFixedThreadPool(4);
-    public static int imageSize = 800;
     public static final double dx = width/(800-1);
     public static final double dy = height/(800-1);
-    public static final int MAX_RGB_VALUE = 255;
-    public int max_iter = 255;
     public static double zoom;
 
     public Mandel(double zoomA, double movex, double movey) {
+        this.setIter(250);
         deplX = movex;
         deplY = movey;
         zoom = zoomA;
@@ -35,27 +31,12 @@ public class Mandel extends JPanel {
         setBackground(Color.black);
     }
 
-    public static Color invert(Color c) {
-        //  TODO : improve
-        int a = c.getAlpha();
-        int r = MAX_RGB_VALUE - c.getRed();
-        int g = MAX_RGB_VALUE - c.getGreen();
-        int b = MAX_RGB_VALUE - c.getBlue();
-
-        // if the resulting color is to light (e.g. initial color is black, resulting color is white...)
-        if ((r + g + b > 740) || (r + g + b < 20)) {
-            // return a standard yellow
-            return new Color(MAX_RGB_VALUE, MAX_RGB_VALUE, 40, a);
-        } else {
-            return new Color(r, g, b, a);
-        }
-    }
 
 
-    public static NombreComplex convertToComplex(int x, int y){
+    public NombreComplex convertToComplex(int x, int y){
 
-        double real = zoom*(startX + x*dx)+deplX;
-        double imaginary = zoom*(2 - y*dy)+deplY;
+        double real = zoom*(startX + x*dx)+deplacementHorizontal;
+        double imaginary = zoom*(2 - y*dy)+deplacementVertical;
         return new NombreComplex(real, imaginary);
 
     }
@@ -93,7 +74,7 @@ public class Mandel extends JPanel {
             NombreComplex z0 = convertToComplex(x, y);
             NombreComplex z = z0;
             int i= 0;
-            while (i<max_iter){
+            while (i<nbitr){
                 z = z.times(z).add(z0);
                 if (z.abs()>2.0){
                     break;
@@ -140,8 +121,8 @@ public class Mandel extends JPanel {
         zoom = v;
     }
     public void setDeplacement(double v, double v1) {
-        deplX = v;
-        deplY = v1;
+        deplacementHorizontal = v;
+        deplacementVertical = v1;
         this.repaint();
     }
 }
