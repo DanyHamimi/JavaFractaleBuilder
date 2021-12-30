@@ -1,14 +1,11 @@
 package com.example.prjt;
 
 import java.io.IOException;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
@@ -16,7 +13,6 @@ public class JuliaFractal extends Fractal{
 
     private static Graphics2D ggglo;
     public static double zoomv;
-    public static int imgnbr;
     double cReal = -0.8;
     double cImag = 0.156;
 
@@ -25,7 +21,6 @@ public class JuliaFractal extends Fractal{
         setPreferredSize(new Dimension(800, 800));
         setBackground(Color.white);
         this.zoomv = zoomv;
-        imgnbr++;
         deplacementHorizontal = deplacement1;
         deplacementVertical = deplacement2;
     }
@@ -37,16 +32,9 @@ public class JuliaFractal extends Fractal{
     }
 
     synchronized public void drawJuliaSet(Graphics2D g, double zoom, double posx, double posy,double real,double imag, JFrame windowtotal) throws IOException, InterruptedException {
-        long startTime = System.nanoTime();
         img = new BufferedImage((int)imageSize, (int)imageSize,BufferedImage.TYPE_INT_RGB);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-
-
         NombreComplex constant = new NombreComplex(cReal,cImag);
 
-
-        int max_iter = nbitr;
         JuliaDrawThread D1 = new JuliaDrawThread(zoom,0,constant,(int)imageSize,0,(int)imageSize/4,img,this,windowtotal);
         JuliaDrawThread D2 = new JuliaDrawThread(zoom,1,constant,(int)imageSize,(int)imageSize/4-1,(int)imageSize/2,img,this,windowtotal);
         JuliaDrawThread D3 = new JuliaDrawThread(zoom,1,constant,(int)imageSize,(int)imageSize/2-1,3*(int)imageSize/4,img,this,windowtotal);
@@ -60,18 +48,12 @@ public class JuliaFractal extends Fractal{
         while (!executor.isTerminated()) {   }
 
         executor = Executors.newFixedThreadPool(4);
-        //ImageIO.write(img,"PNG", new File(imgnbr+".png"));
-        //ImageIO.write(img,"PNG", new File("julia.png"));
         if(g != null){
             g.drawImage(img, 0, 0, null);
         }
-        long endTime = System.nanoTime();
-        long duration = ((endTime - startTime)/1000000);
-
         if(windowtotal !=null){
             repaintng(windowtotal);
         }
-        System.out.println(duration+"ms pour générer l'image");
     }
 
     private void repaintng(JFrame windowtotal) {

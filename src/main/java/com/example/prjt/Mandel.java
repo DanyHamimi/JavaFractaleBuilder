@@ -41,11 +41,7 @@ public class Mandel extends Fractal {
 
     }
     public void MandelSet(Graphics2D g) throws IOException {
-        long startTime = System.nanoTime();
-
-
         img = new BufferedImage((int)imageSize, (int)imageSize,BufferedImage.TYPE_3BYTE_BGR);
-
 
         MandelDrawThread M1 = new MandelDrawThread(this,imageSize/4,0);
         MandelDrawThread M2 = new MandelDrawThread(this,imageSize/2,imageSize/4-1);
@@ -59,13 +55,7 @@ public class Mandel extends Fractal {
         while (!executor.isTerminated()) {   }
         executor = Executors.newFixedThreadPool(4);
 
-        //ImageIO.write(img,"PNG", new File("mandel.png"));
         g.drawImage(img, 0, 0, null);
-        long endTime = System.nanoTime();
-        long duration = ((endTime - startTime)/1000000);
-
-        //System.out.println(duration+"ms pour générer l'image (Mandel)");
-
     }
 
     public void drawZ(int x){

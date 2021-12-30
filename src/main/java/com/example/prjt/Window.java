@@ -7,8 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class Window extends JFrame {
-    public static double real;
-    public static double imag;
+
     public static int ValActu = 1;
     public static JuliaFractal fractaldraw = new JuliaFractal(1.3,0,0);
     public static Mandel mandeldraw = new Mandel(1,0,0);
@@ -52,6 +51,7 @@ public class Window extends JFrame {
         mandel.exportImg(k);
         System.out.println("L'image a bien été exportée sous le nom : "+k+".png");
     }
+
     public static void main(String[] args) throws IOException {
         {
             SwingUtilities.invokeLater(() -> {
@@ -60,73 +60,67 @@ public class Window extends JFrame {
                 windowtotal.pack();
                 windowtotal.setVisible(true);
                 JPanel f = new JPanel();
-
                 JRadioButton juliaButton = new JRadioButton ("Julia");
-                JRadioButton mandelButton = new JRadioButton ("Mandel");
-                juliaButton.setBounds(0,40,100,15);
-                mandelButton.setBounds(0,80,100,15);
-
+                JRadioButton mandelButton = new JRadioButton ("Mandelbrot");
                 ButtonGroup G1 = new ButtonGroup();
-                G1.add(juliaButton);
-                G1.add(mandelButton);
-                f.add(juliaButton);
-                f.add(mandelButton);
                 JButton buttonzoom = new JButton("+");
                 JButton buttonzoomplus = new JButton("++");
-                buttonzoom.setBounds(400, 742, 400, 20);
-                buttonzoom.setBackground(Color.green);
-                f.add(buttonzoom);
-                buttonzoomplus.setBounds(400, 722, 400, 20);
-                buttonzoomplus.setBackground(Color.green);
-                f.add(buttonzoom);
-                f.add(buttonzoomplus);
-                JButton buttondezoom = new JButton("−");
-                JButton buttondezoomplus = new JButton("- -");
-                buttondezoom.setBackground(Color.red);
-                buttondezoomplus.setBackground(Color.red);
-                buttondezoomplus.setBounds(0, 722, 400, 20);
-                buttondezoom.setBounds(0, 742, 400, 20);
-                f.add(buttondezoomplus);
-                f.add(buttondezoom);
-                fractaldraw.setBounds(800,0,800,800);
-                mandeldraw.setBounds(800,0,800,800);
-                //f.add(mandeldraw,Component.RIGHT_ALIGNMENT, 1);
-                f.add(fractaldraw, Component.RIGHT_ALIGNMENT, 1);
+                JButton buttondezoom = new JButton("-");
+                JButton buttondezoomplus = new JButton("--");
                 JButton butexport = new JButton("Exporter");
-                butexport.setBounds(700,0,100,20);
-                f.add(butexport);
-                JButton movedroite = new JButton(">");
-                JButton movegauche = new JButton("<");
-                movedroite.setBounds(400,702,400,20);
-                movegauche.setBounds(0,702,400,20);
-                f.add(movedroite);
-                f.add(movegauche);
-                JButton moveHaut = new JButton("UP");
-                JButton moveBas = new JButton("DOWN");
-                moveHaut.setBounds(0,682,400,20);
-                moveBas.setBounds(400,682,400,20);
-                f.add(moveHaut);
-                f.add(moveBas);
-                f.setVisible(true);
-                windowtotal.setResizable(false);
-                windowtotal.add(f);
+                JButton movedroite = new JButton("→");
+                JButton movegauche = new JButton("←");
+                JButton moveHaut = new JButton("↑");
+                JButton moveBas = new JButton("↓");
                 JTextField realV = new JTextField();
                 JTextField imagV = new JTextField();
                 JLabel rT = new JLabel("Réel");
                 JLabel iT = new JLabel("Imaginaire");
-                rT.setBounds(200,400,70,40);
-                iT.setBounds(200,450,70,40);
-                realV.setBounds(270,400,60,30);
-                imagV.setBounds(270,450,60,30);
+                JButton generatenew = new JButton("Générer");
+                juliaButton.setBounds(250,180,100,15);
+                mandelButton.setBounds(350,180,100,15);
+                buttonzoom.setBounds(50, 442, 50, 50);
+                buttonzoomplus.setBounds(450, 442, 50, 50);
+                buttondezoomplus.setBounds(400, 442, 50, 50);
+                buttondezoom.setBounds(0, 442, 50, 50);
+                fractaldraw.setBounds(800,0,800,800);
+                mandeldraw.setBounds(800,0,800,800);
+                butexport.setBounds(700,0,100,20);
+                movedroite.setBounds(752,443,47,47);
+                movegauche.setBounds(658,443,47,47);
+                moveHaut.setBounds(705,396,47,47);
+                moveBas.setBounds(705,443,47,47);
+                rT.setBounds(290,240,70,40);
+                iT.setBounds(290,290,70,40);
+                realV.setBounds(360,240,60,30);
+                imagV.setBounds(360,290,60,30);
+                generatenew.setBounds(290,360,200,20);
+
+                G1.add(juliaButton);
+                G1.add(mandelButton);
+                f.add(juliaButton);
+                f.add(mandelButton);
+                f.add(buttonzoom);
+                f.add(buttonzoom);
+                f.add(buttonzoomplus);
+                f.add(buttondezoomplus);
+                f.add(buttondezoom);
+                f.add(fractaldraw, Component.RIGHT_ALIGNMENT, 1);
+                f.add(butexport);
+                f.add(movedroite);
+                f.add(movegauche);
+                f.add(moveHaut);
+                f.add(moveBas);
+                f.setVisible(true);
                 f.add(realV);
                 f.add(imagV);
                 f.add(rT);
                 f.add(iT);
-                juliaButton.setSelected(true);
-                JButton generatenew = new JButton("Générer");
-                generatenew.setBounds(200,500,200,20);
                 f.add(generatenew);
                 f.setLayout(null);
+                windowtotal.add(f);
+                windowtotal.setResizable(false);
+                juliaButton.setSelected(true);
                 buttonzoom.addActionListener(new ActionListener() {
                     @Override public void actionPerformed(ActionEvent e) {
                         redraw(windowtotal,true,1.1,ValActu);
@@ -202,7 +196,6 @@ public class Window extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         if(juliaButton.isSelected() && ValActu ==0){
                             ValActu = 1;
-                            System.out.println("Julia");
                             f.remove(mandeldraw);
                             rT.setVisible(true);
                             iT.setVisible(true);
@@ -218,7 +211,6 @@ public class Window extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         if(mandelButton.isSelected() && ValActu ==1){
                             ValActu = 0;
-                            System.out.println("Mandel");
                             f.remove(fractaldraw);
                             f.add(mandeldraw);
                             mandeldraw.setZoom(1);
@@ -233,11 +225,6 @@ public class Window extends JFrame {
                 });
                 windowtotal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 windowtotal.repaint();
-                /**Mandel mandele = new Mandel();
-                mandele.setLayout(null);
-                windowtotal.add(mandele);**/
-                //windowtotal.add(checkb);
-
             });
         }
     }
@@ -258,7 +245,6 @@ public class Window extends JFrame {
         windowtotal.repaint();
         fractaldraw.setBounds(800,0,800,800);
         f.add(fractaldraw, Component.RIGHT_ALIGNMENT, 1);
-        System.out.println("Je suis passé ici");
     }
     private static void moveonplan(JFrame windowtotal,double val1,double val2) {
         if(ValActu == 0){
@@ -269,10 +255,4 @@ public class Window extends JFrame {
         }
         windowtotal.repaint();
     }
-
-
-    private static void ShowJulia(JFrame windowtotal) {
-    }
-
-
 }
