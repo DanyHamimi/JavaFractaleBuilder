@@ -15,8 +15,8 @@ public class Mandel extends Fractal {
     public static final double startX = -2;
     public static final double width = 4;
     public static final double height = 4;
-    public static final double dx = width/(800-1);
-    public static final double dy = height/(800-1);
+    public static final double dx = width/(imageSize-1);
+    public static final double dy = height/(imageSize-1);
     public static double zoom;
 
     public Mandel(double zoomA, double movex, double movey) {
@@ -27,7 +27,18 @@ public class Mandel extends Fractal {
         setPreferredSize(new Dimension(imageSize, imageSize));
         setBackground(Color.black);
     }
+    public Mandel(double zoomA, double movex, double movey,int size) {
+        this.setIter(250);
+        deplacementHorizontal = movex;
+        deplacementVertical = movey;
+        zoom = zoomA;
+        setPreferredSize(new Dimension(size, size));
+        setBackground(Color.black);
+    }
 
+    public void setS(int s){
+        setPreferredSize(new Dimension(s, s));
+    }
 
 
     public NombreComplex convertToComplex(int x, int y){
@@ -51,8 +62,10 @@ public class Mandel extends Fractal {
         executor.shutdown();
         while (!executor.isTerminated()) {   }
         executor = Executors.newFixedThreadPool(4);
+        if(g!=null){
+           g.drawImage(img, 0, 0, null);
+        }
 
-        g.drawImage(img, 0, 0, null);
     }
 
     public void drawZ(int x){
@@ -83,6 +96,7 @@ public class Mandel extends Fractal {
     }
     @Override
     public void paintComponent(Graphics gg) {
+        ggglo = (Graphics2D) gg;
         super.paintComponent(gg);
         Graphics2D g = (Graphics2D) gg;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

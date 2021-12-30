@@ -15,7 +15,7 @@ public class Window extends JFrame implements FunctionsDrawing{
     public static void setController(Controller co){
         c = co;
     }
-    public static void main(String[] args) throws IOException {
+    public void win() throws IOException {
         {
             SwingUtilities.invokeLater(() -> {
                 JFrame windowtotal = new JFrame("Fractales");

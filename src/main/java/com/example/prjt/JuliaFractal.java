@@ -11,14 +11,13 @@ import java.util.concurrent.Executors;
 
 public class JuliaFractal extends Fractal{
 
-    private static Graphics2D ggglo;
     public static double zoomv;
     double cReal = -0.8;
     double cImag = 0.156;
 
     public JuliaFractal(double zoomv,double deplacement1,double deplacement2,int nbITT) {
         this.setIter(nbITT);
-        setPreferredSize(new Dimension(800, 800));
+        setPreferredSize(new Dimension(imageSize, imageSize));
         setBackground(Color.white);
         this.zoomv = zoomv;
         deplacementHorizontal = deplacement1;

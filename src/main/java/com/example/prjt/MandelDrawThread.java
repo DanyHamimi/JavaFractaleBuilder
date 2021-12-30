@@ -9,8 +9,8 @@ public class MandelDrawThread extends Thread{
     public static final double width = 4;
     public static final double startY = 2;
     public static final double height = 4;
-    public static final double dx = width/(800-1);
-    public static final double dy = height/(800-1);
+    public static final double dx = width/(Mandel.imageSize-1);
+    public static final double dy = height/(Mandel.imageSize-1);
     public static final int MAX_RGB_VALUE = 255;
     private final int valToDraw;
     private final int minInt;
