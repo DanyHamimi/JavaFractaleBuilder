@@ -16,8 +16,8 @@ public class JuliaFractal extends Fractal{
     double cReal = -0.8;
     double cImag = 0.156;
 
-    public JuliaFractal(double zoomv,double deplacement1,double deplacement2) {
-        this.setIter(1000);
+    public JuliaFractal(double zoomv,double deplacement1,double deplacement2,int nbITT) {
+        this.setIter(nbITT);
         setPreferredSize(new Dimension(800, 800));
         setBackground(Color.white);
         this.zoomv = zoomv;
@@ -98,7 +98,7 @@ public class JuliaFractal extends Fractal{
 
             Color color = Color.getHSBColor(Hued, 0.75f, 1.0f);
             if(i>10){
-                img.setRGB(x,y,invert(color).getRGB());
+                img.setRGB(x,y,setColor(color).getRGB());
             }else{
                 img.setRGB(x,y,Color.BLACK.getRGB());
             }

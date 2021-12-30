@@ -6,56 +6,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Window extends JFrame {
+public class Window extends JFrame implements FunctionsDrawing{
 
     public static int ValActu = 1;
-    public static JuliaFractal fractaldraw = new JuliaFractal(1.3,0,0);
+    public static JuliaFractal fractaldraw = new JuliaFractal(1.3,0,0,1000);
     public static Mandel mandeldraw = new Mandel(1,0,0);
-
-    public static void redraw(JFrame windowtotal,boolean val,double valzoo,int type){
-        if(type == 1){
-            if(val){
-                fractaldraw.setZoom(fractaldraw.getActualZoom()/valzoo);
-            }
-            else {
-                fractaldraw.setZoom(fractaldraw.getActualZoom()*valzoo);
-            }
-        }
-        else {
-            if(val){
-                mandeldraw.setZoom(mandeldraw.getActualZoom()/valzoo);
-            }
-            else {
-                mandeldraw.setZoom(mandeldraw.getActualZoom()*valzoo);
-            }
-        }
-        windowtotal.repaint();
+    private static Controller c;
+    public static void setController(Controller co){
+        c = co;
     }
-
-    public static JuliaFractal remake(float creal1, float cimag1, JFrame windowtotal){
-        JuliaFractal fractaldraw2 = new JuliaFractal(1.3,0,0);
-        fractaldraw2.setReAndIm(creal1, cimag1);
-
-        try {
-            fractaldraw2.drawJuliaSet(null,1.3,0,0,creal1,cimag1,windowtotal);
-        } catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();
-        }
-        return fractaldraw2;
-    }
-    private static void exportImg(JuliaFractal fractaldraw, String k) {
-        fractaldraw.exportImg(k);
-        System.out.println("L'image a bien été exportée sous le nom : "+k+".png");
-    }
-    private static void exportImg(Mandel mandel, String k) {
-        mandel.exportImg(k);
-        System.out.println("L'image a bien été exportée sous le nom : "+k+".png");
-    }
-
     public static void main(String[] args) throws IOException {
         {
             SwingUtilities.invokeLater(() -> {
                 JFrame windowtotal = new JFrame("Fractales");
+                Controller c = new Controller(windowtotal);
+                setController(c);
                 windowtotal.setPreferredSize(new Dimension(1600, 800));
                 windowtotal.pack();
                 windowtotal.setVisible(true);
@@ -76,7 +41,13 @@ public class Window extends JFrame {
                 JTextField imagV = new JTextField();
                 JLabel rT = new JLabel("Réel");
                 JLabel iT = new JLabel("Imaginaire");
+                JLabel iV = new JLabel("Ittérations");
                 JButton generatenew = new JButton("Générer");
+                JTextField iterV = new JTextField("1000");
+                JButton Color1 = new JButton("Couleur 1");
+                JButton Color2 = new JButton("Couleur 2");
+                JButton Color3 = new JButton("Couleur 3");
+                iterV.setBounds(360,340,60,30);
                 juliaButton.setBounds(250,180,100,15);
                 mandelButton.setBounds(350,180,100,15);
                 buttonzoom.setBounds(50, 442, 50, 50);
@@ -85,7 +56,7 @@ public class Window extends JFrame {
                 buttondezoom.setBounds(0, 442, 50, 50);
                 fractaldraw.setBounds(800,0,800,800);
                 mandeldraw.setBounds(800,0,800,800);
-                butexport.setBounds(700,0,100,20);
+                butexport.setBounds(700,710,100,50);
                 movedroite.setBounds(752,443,47,47);
                 movegauche.setBounds(658,443,47,47);
                 moveHaut.setBounds(705,396,47,47);
@@ -94,7 +65,11 @@ public class Window extends JFrame {
                 iT.setBounds(290,290,70,40);
                 realV.setBounds(360,240,60,30);
                 imagV.setBounds(360,290,60,30);
-                generatenew.setBounds(290,360,200,20);
+                iV.setBounds(290,340,70,40);
+                generatenew.setBounds(290,390,200,20);
+                Color1.setBounds(50,600,180,50);
+                Color2.setBounds(250,600,180,50);
+                Color3.setBounds(450,600,180,50);
 
                 G1.add(juliaButton);
                 G1.add(mandelButton);
@@ -117,142 +92,36 @@ public class Window extends JFrame {
                 f.add(rT);
                 f.add(iT);
                 f.add(generatenew);
+                f.add(iterV);
+                f.add(iV);
+                f.add(Color1);
+                f.add(Color2);
+                f.add(Color3);
                 f.setLayout(null);
                 windowtotal.add(f);
                 windowtotal.setResizable(false);
                 juliaButton.setSelected(true);
-                buttonzoom.addActionListener(new ActionListener() {
-                    @Override public void actionPerformed(ActionEvent e) {
-                        redraw(windowtotal,true,1.1,ValActu);
-                    }
-                });
-                buttondezoom.addActionListener(new ActionListener() {
-                    @Override public void actionPerformed(ActionEvent e) {
-                        redraw(windowtotal,false,1.1,ValActu);
-                    }
-                });
-                buttondezoomplus.addActionListener(new ActionListener() {
-                    @Override public void actionPerformed(ActionEvent e) {
-                        redraw(windowtotal,false,3,ValActu);
-                    }
-                });
-                buttonzoomplus.addActionListener(new ActionListener() {
-                    @Override public void actionPerformed(ActionEvent e) {
-                        redraw(windowtotal,true,3,ValActu);
-                    }
-                });
-                butexport.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        JOptionPane j = new JOptionPane();
-                        j.setName("Exporter");
-                        String k = j.showInputDialog("Veuillez entrer le nom voulu pour l'image","MonFractale");
-                        if(k == null){
-                            return;
-                        }
-                        while (k==null || k.length()==0){
-                            k = j.showInputDialog("Veuillez entrer le nom voulu pour l'image","MonFractale");
-                        }
-                        if(ValActu == 0){
-                            exportImg(mandeldraw,k);
-                        }
-                        else {
-                            exportImg(fractaldraw,k);
-                        }
-                    }
-                });
-                movedroite.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        moveonplan(windowtotal,0.2,0);
-                    }
-                });
-                movegauche.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        moveonplan(windowtotal,-0.2,0);
-                    }
-                });
-                moveHaut.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        moveonplan(windowtotal,0,-0.2);
-                    }
-                });
-                moveBas.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        moveonplan(windowtotal,0,+0.2);
-                    }
-                });
 
-                generatenew.addActionListener(new ActionListener() {
-                    @Override public void actionPerformed(ActionEvent e) {
-                        RedrawJuliaB(windowtotal,realV,imagV,f,true);
-                    }
-                });
-                juliaButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if(juliaButton.isSelected() && ValActu ==0){
-                            ValActu = 1;
-                            f.remove(mandeldraw);
-                            rT.setVisible(true);
-                            iT.setVisible(true);
-                            realV.setVisible(true);
-                            imagV.setVisible(true);
-                            generatenew.setVisible(true);
-                            RedrawJuliaB(windowtotal,null,null,f,false);
-                        }
-                    }
-                });
-                mandelButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if(mandelButton.isSelected() && ValActu ==1){
-                            ValActu = 0;
-                            f.remove(fractaldraw);
-                            f.add(mandeldraw);
-                            mandeldraw.setZoom(1);
-                            rT.setVisible(false);
-                            iT.setVisible(false);
-                            realV.setVisible(false);
-                            imagV.setVisible(false);
-                            generatenew.setVisible(false);
-                            windowtotal.repaint();
-                        }
-                    }
-                });
+                buttonzoom.addActionListener(c.buttonzoom());
+                buttondezoom.addActionListener(c.buttondezoom());
+                buttondezoomplus.addActionListener(c.buttondezoomplus());
+                buttonzoomplus.addActionListener(c.buttonzoomplus());
+                butexport.addActionListener(c.butexport());
+                movedroite.addActionListener(c.movedroite());
+                movegauche.addActionListener(c.movegauche());
+                moveHaut.addActionListener(c.moveHaut());
+                moveBas.addActionListener(c.moveBas());
+                Color1.addActionListener(c.Color1());
+                Color2.addActionListener(c.Color2());
+                Color3.addActionListener(c.Color3());
+                generatenew.addActionListener(c.generatenew(realV,imagV,f,iterV));
+                juliaButton.addActionListener(c.juliaButton(juliaButton,f,rT,iT,realV,imagV,generatenew,iV,iterV));
+                mandelButton.addActionListener(c.mandelButton(mandelButton,f,rT,iT,realV,imagV,generatenew,iV,iterV));
+
                 windowtotal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 windowtotal.repaint();
             });
         }
     }
 
-    private static void RedrawJuliaB(JFrame windowtotal, JTextField realV, JTextField imagV, JPanel f,boolean type){
-        float re = (float) -0.8;
-        float im = (float) 0.156;
-        if(type){
-            try {
-                re = Float.parseFloat(realV.getText());
-                im = Float.parseFloat(imagV.getText());
-            } catch (NumberFormatException exp) {
-                System.out.println("Erreur merci d'entrer une valeur correcte, valeurs par défaut appliquées.");
-            }
-        }
-        f.remove(fractaldraw);
-        fractaldraw = remake(re,im,windowtotal);
-        windowtotal.repaint();
-        fractaldraw.setBounds(800,0,800,800);
-        f.add(fractaldraw, Component.RIGHT_ALIGNMENT, 1);
-    }
-    private static void moveonplan(JFrame windowtotal,double val1,double val2) {
-        if(ValActu == 0){
-            mandeldraw.setDeplacement(mandeldraw.deplacementHorizontal+val1*mandeldraw.getActualZoom(),mandeldraw.deplacementVertical-val2*mandeldraw.getActualZoom());
-        }
-        else {
-            fractaldraw.setDeplacement(fractaldraw.deplacementHorizontal+val1*fractaldraw.getActualZoom(),fractaldraw.deplacementVertical+val2*fractaldraw.getActualZoom());
-        }
-        windowtotal.repaint();
-    }
 }

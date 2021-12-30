@@ -14,7 +14,7 @@ public class Fractal extends JPanel {
     int nbitr;
     static BufferedImage img;
     ExecutorService executor = Executors.newFixedThreadPool(4);
-
+    static int ValColor;
 
 
     public static Color invert(Color c) {
@@ -31,6 +31,18 @@ public class Fractal extends JPanel {
         } else {
             return new Color(r, g, b, a);
         }
+    }
+    public Color setColor(Color c){
+        if(ValColor==0){
+            return invert(c);
+        }
+        else if(ValColor==1){
+            return c;
+        }
+        int r = (int)(c.getRed() * 0.299);
+        int g = (int)(c.getGreen() * 0.587);
+        int b = (int)(c.getBlue() *0.114);
+        return new Color(r+g+b, r+g+b,r+g+b);
     }
     public void setIter(int i){
         this.nbitr=i;

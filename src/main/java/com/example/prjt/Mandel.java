@@ -14,10 +14,7 @@ import java.util.concurrent.Executors;
 public class Mandel extends Fractal {
     public static final double startX = -2;
     public static final double width = 4;
-    public static final double startY = 2;
     public static final double height = 4;
-    public static double deplX = 0;
-    public static double deplY = 0;
     public static final double dx = width/(800-1);
     public static final double dy = height/(800-1);
     public static double zoom;
@@ -78,7 +75,7 @@ public class Mandel extends Fractal {
 
             Color color = Color.getHSBColor(Hued, 0.75f, 1.0f);
             if(i>10){
-                img.setRGB(x,y,color.getRGB());
+                img.setRGB(x,y,setColor(color).getRGB());
             }else{
                 img.setRGB(x,y,Color.BLACK.getRGB());
             }
